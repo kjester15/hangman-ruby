@@ -1,12 +1,13 @@
 # create a class for the game
 class Game
-  attr_reader :hangman_pics, :answer, :guess
+  attr_reader :hangman_pics, :answer, :guess, :game_over
 
   def initialize
     @words = %w[rabbit hello plant cat mouse home burrito]
     @alphabet = %w[a b c d e f g h i j k l m n o p q r s t u v w x y z]
     @answer = @words.sample
     @guess = ['']
+    @game_over = false
     @hangman_pics = ['''
       +---+
       |   |
@@ -60,15 +61,17 @@ class Game
   end
 
   def populate_guess
-    guess_length = answer.length
-    guess_length.times do
+    answer.length.times do
       @guess[0] += '_ '
     end
     @guess
   end
 
-  def update_guess(player_guess)
+  def update_guess(guess)
     # check if letter matches letter in answer > if so, update letter in that position in guess
+    if @answer.include?(guess)
+      puts 'test'
+    end
   end
 end
 
@@ -105,11 +108,17 @@ running out of lives. You have 6 lives. Good luck!"
   # run initial class methods
   new_game.populate_guess
 
-  puts "Answer for testing purposes: #{new_game.answer}"
   # loop while lives > 0 and player hasn't won
+  while new_player.lives.positive? && new_game.game_over == false
     puts new_game.hangman_pics[6 - new_player.lives]
-    puts new_game.guess
-    new_player.make_guess
+    puts
+    puts "Answer for testing purposes: #{new_game.answer}"
+    puts
+    puts "Current Guess: #{new_game.guess[0]}"
+    puts
+    guess = new_player.make_guess
+    new_game.update_guess(guess)
+  end
 
   # ask to play another game
   answer = ''
