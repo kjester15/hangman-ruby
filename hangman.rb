@@ -1,7 +1,6 @@
 # create a class for the game
 class Game
-  attr_accessor :answer, :guess, :alphabet
-  attr_reader :hangman_pics
+  attr_reader :hangman_pics, :answer, :guess
 
   def initialize
     @words = %w[rabbit hello plant cat mouse home burrito]
@@ -67,6 +66,10 @@ class Game
     end
     @guess
   end
+
+  def update_guess(player_guess)
+    # check if letter matches letter in answer > if so, update letter in that position in guess
+  end
 end
 
 # create a class for the player
@@ -108,5 +111,14 @@ running out of lives. You have 6 lives. Good luck!"
     puts new_game.guess
     new_player.make_guess
 
-  break
+  # ask to play another game
+  answer = ''
+  until answer == 'yes' || answer == 'no'
+    puts 'Would you like to play again?'
+    answer = gets.chomp.downcase
+    break if answer == 'yes' || answer == 'no'
+
+    puts "Please answer with 'yes' or 'no'"
+  end
+  break if answer == 'no'
 end
