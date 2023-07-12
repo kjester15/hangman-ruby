@@ -71,14 +71,14 @@ class Game
 
   def update_guess(guess)
     # check if letter matches letter in answer > if so, update letter in that position in guess
-    if @answer.include?(guess)
-      # break method if letter was already guessed
-      if @guessed_letters.include?(guess)
-        puts 'You already tried that letter, pick another!'
-        puts
-        return
-      end
+    # break method if letter was already guessed
+    if @guessed_letters.include?(guess)
+      puts 'You already tried that letter, pick another!'
+      puts
+      return
+    end
 
+    if @answer.include?(guess)
       # add guessed letter to guess array or remove a life if not in answer
       count = @answer.count(guess)
       if count > 1
@@ -91,10 +91,18 @@ class Game
       else
         @guess[@answer.index(guess)] = guess
       end
+
+      unless @guess.include?('_')
+        @game_over = true
+      end
     else
       @lives -= 1
+      if @lives == 0
+        @game_over = true
+      end
     end
     puts "Lives remaining: #{lives}"
+    puts
     @guessed_letters << guess
   end
 
