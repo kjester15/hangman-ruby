@@ -8,7 +8,7 @@ class Game
     @guessed_letters = []
     @answer = @words.sample
     @lives = 6
-    @guess = ['']
+    @guess = []
     @game_over = false
     @hangman_pics = ['''
       +---+
@@ -63,33 +63,42 @@ class Game
   end
 
   def populate_guess
+    # add underscores to the array for each letter in the answer
     answer.length.times do
-      @guess[0] += '_ '
+      @guess << '_'
     end
-    @guess
   end
 
   def update_guess(guess)
     # check if letter matches letter in answer > if so, update letter in that position in guess
     if @answer.include?(guess)
-      puts 'letter is in word'
+      count = @answer.count(guess)
+      if count > 1
+        i = -1
+        all = []
+        while i = @answer.index(guess, i + 1)
+          all << i
+        end
+        all.each { |x| @guess[x] = guess }
+      else
+        @guess[@answer.index(guess)] = guess
+      end
     else
       @lives -= 1
-      puts @lives
     end
+    puts "Lives remaining: #{lives}"
   end
 
   def win_lose_message(lives)
     if lives.positive?
       puts 'Congrats! You win!'
-      puts
     else
       # display final hangman image
       puts @hangman_pics[6]
       puts
       puts 'Game over! You lose!'
-      puts
     end
+    puts
   end
 end
 
@@ -102,6 +111,7 @@ class Player
   end
 
   def make_guess
+    # gets a valid guess from the player
     player_guess = ''
     until player_guess.length == 1 && @alphabet.include?(player_guess)
       puts 'Which letter would you like to guess?'
@@ -134,10 +144,9 @@ running out of lives. You have 6 lives. Good luck!"
     puts
     puts "Answer for testing purposes: #{new_game.answer}"
     puts
-    puts "Current Guess: #{new_game.guess[0]}"
+    puts "Current Board: #{new_game.guess.join('')}"
     puts
-    guess = new_player.make_guess
-    new_game.update_guess(guess)
+    new_game.update_guess(new_player.make_guess)
   end
 
   # display win or lose message
