@@ -1,11 +1,13 @@
 # create a class for the game
 class Game
-  attr_reader :hangman_pics, :answer, :guess, :game_over
+  attr_reader :hangman_pics, :answer, :guess, :game_over, :lives
 
   def initialize
     @words = %w[rabbit hello plant cat mouse home burrito]
     @alphabet = %w[a b c d e f g h i j k l m n o p q r s t u v w x y z]
+    @guessed_letters = []
     @answer = @words.sample
+    @lives = 6
     @guess = ['']
     @game_over = false
     @hangman_pics = ['''
@@ -70,7 +72,10 @@ class Game
   def update_guess(guess)
     # check if letter matches letter in answer > if so, update letter in that position in guess
     if @answer.include?(guess)
-      puts 'test'
+      puts 'letter is in word'
+    else
+      @lives -= 1
+      puts @lives
     end
   end
 end
@@ -80,7 +85,6 @@ class Player
   attr_accessor :lives
 
   def initialize
-    @lives = 6
     @alphabet = %w[a b c d e f g h i j k l m n o p q r s t u v w x y z]
   end
 
@@ -99,6 +103,7 @@ end
 
 # game functionality below
 loop do
+  puts
   puts "Welcome to 'Hangman'! Your goal is to guess the secret word, 1 letter at a time, before \
 running out of lives. You have 6 lives. Good luck!"
   # create Game & Player class instance
@@ -109,8 +114,8 @@ running out of lives. You have 6 lives. Good luck!"
   new_game.populate_guess
 
   # loop while lives > 0 and player hasn't won
-  while new_player.lives.positive? && new_game.game_over == false
-    puts new_game.hangman_pics[6 - new_player.lives]
+  while new_game.lives.positive? && new_game.game_over == false
+    puts new_game.hangman_pics[6 - new_game.lives]
     puts
     puts "Answer for testing purposes: #{new_game.answer}"
     puts
@@ -118,6 +123,17 @@ running out of lives. You have 6 lives. Good luck!"
     puts
     guess = new_player.make_guess
     new_game.update_guess(guess)
+  end
+
+  if new_game.lives.positive?
+    puts 'Congrats! You win!'
+    puts
+  else
+    # display final hangman image
+    puts new_game.hangman_pics[6]
+    puts
+    puts 'Game over! You lose!'
+    puts
   end
 
   # ask to play another game
