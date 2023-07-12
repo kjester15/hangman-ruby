@@ -78,6 +78,19 @@ class Game
       puts @lives
     end
   end
+
+  def win_lose_message(lives)
+    if lives.positive?
+      puts 'Congrats! You win!'
+      puts
+    else
+      # display final hangman image
+      puts @hangman_pics[6]
+      puts
+      puts 'Game over! You lose!'
+      puts
+    end
+  end
 end
 
 # create a class for the player
@@ -92,6 +105,7 @@ class Player
     player_guess = ''
     until player_guess.length == 1 && @alphabet.include?(player_guess)
       puts 'Which letter would you like to guess?'
+      print 'Guess: '
       player_guess = gets.chomp.downcase
       break if player_guess.length == 1 && @alphabet.include?(player_guess)
 
@@ -106,6 +120,7 @@ loop do
   puts
   puts "Welcome to 'Hangman'! Your goal is to guess the secret word, 1 letter at a time, before \
 running out of lives. You have 6 lives. Good luck!"
+
   # create Game & Player class instance
   new_game = Game.new
   new_player = Player.new
@@ -125,16 +140,8 @@ running out of lives. You have 6 lives. Good luck!"
     new_game.update_guess(guess)
   end
 
-  if new_game.lives.positive?
-    puts 'Congrats! You win!'
-    puts
-  else
-    # display final hangman image
-    puts new_game.hangman_pics[6]
-    puts
-    puts 'Game over! You lose!'
-    puts
-  end
+  # display win or lose message
+  new_game.win_lose_message(new_game.lives)
 
   # ask to play another game
   answer = ''
