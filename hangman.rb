@@ -72,6 +72,14 @@ class Game
   def update_guess(guess)
     # check if letter matches letter in answer > if so, update letter in that position in guess
     if @answer.include?(guess)
+      # break method if letter was already guessed
+      if @guessed_letters.include?(guess)
+        puts 'You already tried that letter, pick another!'
+        puts
+        return
+      end
+
+      # add guessed letter to guess array or remove a life if not in answer
       count = @answer.count(guess)
       if count > 1
         i = -1
@@ -87,6 +95,7 @@ class Game
       @lives -= 1
     end
     puts "Lives remaining: #{lives}"
+    @guessed_letters << guess
   end
 
   def win_lose_message(lives)
@@ -117,6 +126,7 @@ class Player
       puts 'Which letter would you like to guess?'
       print 'Guess: '
       player_guess = gets.chomp.downcase
+      puts
       break if player_guess.length == 1 && @alphabet.include?(player_guess)
 
       puts 'Please choose a single valid letter between a-z.'
