@@ -1,12 +1,15 @@
+require 'csv'
+
 # create a class for the game
 class Game
   attr_reader :hangman_pics, :answer, :guess, :game_over, :lives
+  attr_accessor :words
 
   def initialize
-    @words = %w[rabbit hello plant cat mouse home burrito]
+    @words = []
     @alphabet = %w[a b c d e f g h i j k l m n o p q r s t u v w x y z]
     @guessed_letters = []
-    @answer = @words.sample
+    @answer = ''
     @lives = 6
     @guess = []
     @game_over = false
@@ -62,7 +65,13 @@ class Game
     =========''']
   end
 
+  def load_dictionary
+    File.foreach('google-10000-english-no-swears.txt') { |line| @words << line.chomp }
+  end
+
   def populate_guess
+    # pick random word for answer
+    @answer = @words.sample
     # add underscores to the array for each letter in the answer
     answer.length.times do
       @guess << '_'
@@ -91,12 +100,13 @@ class Game
       else
         @guess[@answer.index(guess)] = guess
       end
-
+      # end game if word is guessed
       unless @guess.include?('_')
         @game_over = true
       end
     else
       @lives -= 1
+      # end game if out of lives
       if @lives == 0
         @game_over = true
       end
@@ -154,6 +164,8 @@ running out of lives. You have 6 lives. Good luck!"
   new_player = Player.new
 
   # run initial class methods
+  new_game.load_dictionary
+  puts new_game.words
   new_game.populate_guess
 
   # loop while lives > 0 and player hasn't won
