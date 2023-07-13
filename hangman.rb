@@ -71,7 +71,9 @@ class Game
 
   def populate_guess
     # pick random word for answer
-    @answer = @words.sample
+    until @answer.length > 4 && @answer.length < 13
+      @answer = @words.sample
+    end
     # add underscores to the array for each letter in the answer
     answer.length.times do
       @guess << '_'
