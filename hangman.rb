@@ -69,6 +69,14 @@ class Game
     File.foreach('google-10000-english-no-swears.txt') { |line| @words << line.chomp }
   end
 
+  def load_game
+    # File.open
+  end
+
+  def save_game
+    # save
+  end
+
   def populate_guess
     # pick random word for answer
     until @answer.length > 4 && @answer.length < 13
@@ -161,13 +169,14 @@ loop do
   puts "Welcome to 'Hangman'! Your goal is to guess the secret word, 1 letter at a time, before \
 running out of lives. You have 6 lives. Good luck!"
 
+  # puts "Would you like to start a new game or load a prior one? Type 'load' or 'new'."
+
   # create Game & Player class instance
   new_game = Game.new
   new_player = Player.new
 
   # run initial class methods
   new_game.load_dictionary
-  puts new_game.words
   new_game.populate_guess
 
   # loop while lives > 0 and player hasn't won
@@ -177,6 +186,16 @@ running out of lives. You have 6 lives. Good luck!"
     puts "Answer for testing purposes: #{new_game.answer}"
     puts
     puts "Current Board: #{new_game.guess.join('')}"
+    puts
+    puts "Would you like to save your game? Type 'yes' to save your game, or 'no' to continue without saving."
+    save = ''
+    until save == 'yes' || save == 'no'
+      save = gets.chomp.downcase
+      break if save == 'yes' || save == 'no'
+
+      "Please type 'yes' or 'no' to continue"
+    end
+    if save == 'yes' then new_game.save_game end
     puts
     new_game.update_guess(new_player.make_guess)
   end
