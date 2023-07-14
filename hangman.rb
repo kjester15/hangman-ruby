@@ -87,7 +87,7 @@ class Game
 
   def save_game(yaml_file, id)
     Dir.mkdir('saves') unless Dir.exist?('saves')
-    filename = "saves/save_#{id}.txt"
+    filename = "saves/save_#{id}.yaml"
     File.open(filename, 'w') do |file|
       file.puts yaml_file
     end
@@ -179,7 +179,8 @@ class Player
   end
 
   def load_game(id)
-    File.read("saves/save_#{id}.txt")
+    game_file = File.read("saves/save_#{id}.yaml")
+    YAML.load_file(game_file)
   end
 end
 
@@ -198,6 +199,7 @@ running out of lives. You have 6 lives. Good luck!"
     puts "Please type 'load' to open a saved game, or 'new' to start a new one."
   end
 
+  # create new player object
   new_player = Player.new
 
   if answer == 'load'
@@ -207,7 +209,7 @@ running out of lives. You have 6 lives. Good luck!"
     puts new_player.load_game(id)
   end
 
-  # create Game & Player class instance
+  # create new game object
   new_game = Game.new
 
   # run initial class methods
