@@ -1,4 +1,5 @@
 require 'csv'
+require 'yaml'
 
 # create a class for the game
 class Game
@@ -73,8 +74,23 @@ class Game
     # File.open
   end
 
-  def save_game
-    # save
+  def to_yaml
+    # create yaml file for necessary class variables
+    YAML.dump({
+                guessed_letters: @guessed_letters,
+                answer: @answer,
+                lives: @lives,
+                guess: @guess,
+                game_over: @game_over
+              })
+  end
+
+  def save_game(yaml_file, id)
+    Dir.mkdir('saves') unless Dir.exist?('saves')
+    filename = "saves/save_#{id}.html"
+    File.open(filename, 'w') do |file|
+      file.puts yaml_file
+    end
   end
 
   def populate_guess
@@ -193,9 +209,15 @@ running out of lives. You have 6 lives. Good luck!"
       save = gets.chomp.downcase
       break if save == 'yes' || save == 'no'
 
-      "Please type 'yes' or 'no' to continue"
+      puts "Please type 'yes' or 'no' to continue"
     end
-    if save == 'yes' then new_game.save_game end
+    # create yaml file and save to new file
+    if save == 'yes'
+      yaml_file = new_game.to_yaml
+      puts "Please enter your initials followed by a two digit number, like so - 'KJ01'."
+      id = gets.chomp
+      new_game.save_game(yaml_file, id)
+    end
     puts
     new_game.update_guess(new_player.make_guess)
   end
