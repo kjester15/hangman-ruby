@@ -70,20 +70,20 @@ class Game
     File.foreach('google-10000-english-no-swears.txt') { |line| @words << line.chomp }
   end
 
-  # def to_yaml
-  #   # create yaml file for necessary class variables
-  #   YAML.dump({
-  #               guessed_letters: @guessed_letters,
-  #               answer: @answer,
-  #               lives: @lives,
-  #               guess: @guess,
-  #               game_over: @game_over
-  #             })
-  # end
-
-  def to_yaml(game)
-    YAML.dump(game)
+  def to_yaml
+    # create yaml file for necessary class variables
+    YAML.dump({
+                guessed_letters: @guessed_letters,
+                answer: @answer,
+                lives: @lives,
+                guess: @guess,
+                game_over: @game_over
+              })
   end
+
+  # def to_yaml(game)
+  #   YAML.dump(game)
+  # end
 
   def save_game(yaml_file, id)
     Dir.mkdir('saves') unless Dir.exist?('saves')
@@ -179,8 +179,7 @@ class Player
   end
 
   def load_game(id)
-    game_file = File.read("saves/save_#{id}.yaml")
-    YAML.load_file(game_file)
+    YAML.unsafe_load(File.read("saves/save_#{id}.yaml"))
   end
 end
 
@@ -190,7 +189,8 @@ loop do
   puts "Welcome to 'Hangman'! Your goal is to guess the secret word, 1 letter at a time, before \
 running out of lives. You have 6 lives. Good luck!"
   puts
-  puts "Would you like to start a new game or load a prior one? Type 'load' to open a saved game, or 'new' to start a new one."
+  puts "Would you like to start a new game or load a prior one? Type 'load' to open a saved game, or 'new' to start a \
+I new one."
   answer = ''
   until answer == 'load' || answer == 'new'
     answer = gets.chomp.downcase
@@ -206,7 +206,7 @@ running out of lives. You have 6 lives. Good luck!"
     # get id for save
     puts "Please enter the ID used to save your game (2 digit initials & 2 digit number - ex. 'KJ01')."
     id = gets.chomp.downcase
-    puts new_player.load_game(id)
+    print new_player.load_game(id)
   end
 
   # create new game object
@@ -234,7 +234,7 @@ running out of lives. You have 6 lives. Good luck!"
     end
     # create yaml file and save to new file
     if save == 'yes'
-      yaml_file = new_game.to_yaml(new_game)
+      yaml_file = new_game.to_yaml#(new_game)
       puts "Please enter an ID for your save file, using your initials followed by a two digit number, like so - 'KJ01'."
       id = gets.chomp.downcase
       new_game.save_game(yaml_file, id)
