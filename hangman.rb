@@ -81,16 +81,20 @@ class Game
               })
   end
 
-  # def to_yaml(game)
-  #   YAML.dump(game)
-  # end
-
   def save_game(yaml_file, id)
     Dir.mkdir('saves') unless Dir.exist?('saves')
     filename = "saves/save_#{id}.yaml"
     File.open(filename, 'w') do |file|
       file.puts yaml_file
     end
+  end
+
+  def load_class_values(hash)
+    @guessed_letters = hash[:guessed_letters]
+    @answer = hash[:answer]
+    @lives = hash[:lives]
+    @guess = hash[:guess]
+    @game_over = hash[:game_over]
   end
 
   def populate_guess
@@ -202,19 +206,19 @@ I new one."
   # create new player object
   new_player = Player.new
 
+  # create class with saved data or create a new one
   if answer == 'load'
     # get id for save
     puts "Please enter the ID used to save your game (2 digit initials & 2 digit number - ex. 'KJ01')."
     id = gets.chomp.downcase
-    print new_player.load_game(id)
+    save_hash = new_player.load_game(id)
+    new_game = Game.new
+    new_game.load_class_values(save_hash)
+  elsif answer == 'new'
+    new_game = Game.new
+    new_game.load_dictionary
+    new_game.populate_guess
   end
-
-  # create new game object
-  new_game = Game.new
-
-  # run initial class methods
-  new_game.load_dictionary
-  new_game.populate_guess
 
   # loop while lives > 0 and player hasn't won
   while new_game.lives.positive? && new_game.game_over == false
@@ -257,9 +261,3 @@ I new one."
   end
   break if answer == 'no'
 end
-
-# TODO
-# create yaml object - DONE
-# save yaml object in a file - DONE
-# open the file and read it to a variable
-# use yaml load to load the variable into class
